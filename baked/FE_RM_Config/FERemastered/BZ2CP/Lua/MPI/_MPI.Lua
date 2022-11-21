@@ -131,19 +131,19 @@ function _MPI.SpawnAITeams()
 			return;
 		end
 
+		local AITeamRace = string.char(IFace_GetInteger("network.session.ivar13"));
+		local chosenPoint = GetSafestSpawnpoint();
+
 		-- If Debugging is enabled, we should print all available data related to the AI team
 		if (DEBUG) then
-			print("Current Race of AI Team: (" .. GetRaceOfTeam(team) .. ")");
+			print("Current AITeamRace: (" .. AITeamRace .. ")");
 			--Ally(1, team);
 		end
-
-		local AITeamRace = GetRaceOfTeam(team);
-		local chosenPoint = GetSafestSpawnpoint();
 
 		-- If the AI Recycler does not exist, build one for each team.
 		if (GetObjectByTeamSlot(team, DLL_TEAM_SLOT_RECYCLER) == nil) then
 			AISpawnPosition = GetPositionNear(chosenPoint, VEHICLE_SPACING_DISTANCE, 2 * VEHICLE_SPACING_DISTANCE);
-			AIVehicles.AIRecycler = BuildObject("ivrecy_m", team, AISpawnPosition);
+			AIVehicles.AIRecycler = BuildObject(AITeamRace .. "vrecy_m", team, "RecyclerEnemy");
 			SetRandomHeadingAngle(AIVehicles.AIRecycler);
 		end
 
