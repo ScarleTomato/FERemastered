@@ -18,7 +18,7 @@
         {
             "name":"Forgotten Enemies: Remastered",
             "folder":"FE_RM_Config",
-            "image":"logo.png",
+            "image":"logo.png test",
 			"workshopid":"FE_RM_Config",
             "desc":"desc.txt",
             "version":"v0.0.1"
