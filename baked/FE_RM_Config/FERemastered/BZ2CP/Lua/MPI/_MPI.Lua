@@ -131,7 +131,7 @@ function _MPI.SpawnAITeams()
 			return;
 		end
 
-		local AITeamRace = string.char(IFace_GetInteger("network.session.ivar13"));
+		local AITeamRace = string.char(IFace_GetInteger("network.session.ivar8" .. team));
 		local chosenPoint = GetSafestSpawnpoint();
 
 		-- If Debugging is enabled, we should print all available data related to the AI team
@@ -143,7 +143,7 @@ function _MPI.SpawnAITeams()
 		-- If the AI Recycler does not exist, build one for each team.
 		if (GetObjectByTeamSlot(team, DLL_TEAM_SLOT_RECYCLER) == nil) then
 			AISpawnPosition = GetPositionNear(chosenPoint, VEHICLE_SPACING_DISTANCE, 2 * VEHICLE_SPACING_DISTANCE);
-			AIVehicles.AIRecycler = BuildObject(AITeamRace .. "vrecy_m", team, "RecyclerEnemy");
+			AIVehicles.AIRecycler = BuildObject(AITeamRace .. "vrecy_m", team, "Recycler" .. team);
 			SetRandomHeadingAngle(AIVehicles.AIRecycler);
 		end
 
@@ -163,7 +163,7 @@ function _MPI.SpawnAITeams()
 
 		-- For each active AI team, insert their team number into a table for later use.
 		-- Lastly, create the plan for the AI team.
-		_MPI.SetAIPlan(team);
+		_MPI.SetAIPlan(team, AITeamRace);
 	end
 
 	-- We should handle setting any customised options here in methods. Make sure the options are enabled for them -- AI_Unit.
@@ -171,12 +171,13 @@ end
 
 function _MPI.SpawnAdditionalAIUnits(choice, team) 
 	local chosenUnit = nil;
+	local race = string.char(IFace_GetInteger("network.session.ivar8" .. team));
 
 	if (choice == "turrets") then
-		chosenUnit = ("%svturr"):format(GetRaceOfTeam(team));
+		chosenUnit = ("%svturr"):format(race);
 	else
 		-- We need to handle specific Gun Tower ODFs here based on the CPU Race -- AI_Unit.
-		chosenUnit = ("%sbgtow"):format(GetRaceOfTeam(team));
+		chosenUnit = ("%sbgtow"):format(race);
 	end
 
 	-- Spawn Extra Enemy units. We could probably do this based on difficulty -- AI_Unit.
@@ -188,9 +189,10 @@ function _MPI.SpawnAdditionalAIUnits(choice, team)
 	end
 end
 
-function _MPI.SetAIPlan(team)
+function _MPI.SetAIPlan(team, race)
 	local planName = nil;
 	local planNameBase = "stock13_";
+	local race = string.char(IFace_GetInteger("network.session.ivar8" .. team));
 
 	if (DEBUG) then
 		planNameBase = 'fermpi';
@@ -203,7 +205,7 @@ function _MPI.SetAIPlan(team)
 
 	-- Based on a difficulty IVAR, we can set the difficulty of the AI. ivar70 will need to be changed when this is set up -- AI_Unit.
 	-- Edited to be dynamic for multiple teams. Each team will use the same difficulty -- AI_Unit.
-	planName = ("%s_%s%d.aip"):format(planNameBase, GetRaceOfTeam(team), CPU_DIFFICULTY);
+	planName = ("%s_%d_%s_%d.aip"):format(planNameBase, CPU_DIFFICULTY, race, team);
 
 	-- Ensure that at least one CPU unit has spawned before setting the AIP here -- AI_Unit.
 	SetAIP(planName, team);
