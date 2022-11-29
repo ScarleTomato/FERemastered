@@ -24,3 +24,24 @@ Custom:
 - jammer_scion
 - base_spire1_scion, base_spire2_scion, base_spire3_scion, base_spire4_scion,
 - ante_scion
+
+Hadean:
+- pgen1_had, pgen2_had, pgen3_had, pgen4_had
+- fact_had
+- cbun_had
+- armo_had
+- sbay_had
+- base_gtow1_had, base_gtow2_had, base_gtow3_had, base_gtow4_had
+- tech_had
+- train_had
+
+Cerberi:
+- pgen1_cer, pgen2_cer, pgen3_cer, pgen4_cer
+- fact_cer
+- cbun_cer
+- armo_cer
+- sbay_cer
+- base_gtow1_cer, base_gtow2_cer, base_gtow3_cer, base_gtow4_cer
+- tcen_cer
+- jamm_cer
+- agen_cer
