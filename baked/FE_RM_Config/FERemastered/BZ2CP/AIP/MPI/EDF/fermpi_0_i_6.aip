@@ -9,7 +9,7 @@ consClass = "ivcons_c"
 CheckProvides = true
 DLLCanSwitch = true
 baseDir = 3
-baseLoc = "Recycler6"
+baseLoc = "Recycler_6"
 UnitsService = true
 Difficulty = 1 // 1=Easy, 2=Medium, 3=Hard, 4=Extreme
 
