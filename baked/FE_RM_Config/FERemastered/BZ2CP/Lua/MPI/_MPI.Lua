@@ -126,7 +126,7 @@ end
 
 function _MPI.SpawnAITeams()
 	-- Start at Team 6, as 1 - 5 are players.
-	for team = 6, 6 do
+	for team = 7, 7 do
 		if (team < 6) then
 			return;
 		end
