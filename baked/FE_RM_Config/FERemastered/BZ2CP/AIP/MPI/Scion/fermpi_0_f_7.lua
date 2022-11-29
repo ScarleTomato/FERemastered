@@ -241,9 +241,9 @@ function CountCPUUpgradedExtractors(team, time)
     return AIPUtil.CountUnits(team, "VIRTUAL_CLASS_EXTRACTOR_Upgraded", 'sameteam', true);
 end
 
--- Check if the player has any Gun Towers.
+-- Checks how many Gun Spires the CPU has.
 function CountCPUGunSpires(team, time)
-    return AIPUtil.CountUnits(1, "VIRTUAL_CLASS_GUNTOWER", 'sameteam', true) > 0;
+    return AIPUtil.CountUnits(team, "VIRTUAL_CLASS_GUNTOWER", 'sameteam', true);
 end
 
 ----------------
@@ -273,10 +273,13 @@ function UpgradeKiln(team, time)
     -- Count CPU Gun Spires.
     local gunSpireCount = CountCPUGunSpires(team, time);
 
+    local conditions = 'Scr:' .. myScrap .. '/60 Cns:' .. cpuConsCount .. '/1 Spr:' .. tostring(gunSpireCount) .. '/2 Kln:' .. tostring(doesKilnExist)
+    AIPUtil.print(team, conditions)
+
     if (myScrap >= 60 and cpuConsCount >= 1 and gunSpireCount >= 2 and doesKilnExist) then
-        return true, "UpgradeKiln: Conditions met. Proceeding...";
+        return true, "UpgradeKiln: " .. conditions .. ". Proceeding...";
     else
-        return false, "UpgradeKiln: Conditions unmet. Halting plan.";
+        return false, "UpgradeKiln: " .. conditions .. ". Halting plan.";
     end
 end
 
