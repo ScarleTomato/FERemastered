@@ -103,19 +103,6 @@ buildCount1 = 3
 planCondition = "Lua"
 LuaFunction = "ConstructorBuildLoopCondition"
 
-[Plan10]
-planType = "Attacker"
-planPriority = 910
-targetType1 = "VIRTUAL_CLASS_SCAVENGER"
-targetType2 = "VIRTUAL_CLASS_EXTRACTOR"
-attackType1 = "fvscout"
-attackType2 = "fvscout"
-attackType3 = "fvscout"
-AttackAnything = true
-buildIfNoIdle = true
-planCondition = "Lua"
-LuaFunction = "SendExtractorAttacks"
-
 [Plan11] // Build a Kiln.
 planType = "BaseBuildMinimums"
 planPriority = 900
@@ -147,21 +134,6 @@ planCondition = "Lua"
 LuaFunction = "BuildGunSpire1"
 ContinueEvenIfFail = true
 
-[Plan14]
-planType = "Attacker"
-planPriority = 870
-targetType1 = "VIRTUAL_CLASS_SCAVENGER"
-targetType2 = "VIRTUAL_CLASS_EXTRACTOR"
-targetType3 = "VIRTUAL_CLASS_RECYCLER"
-attackType1 = "fvscout"
-attackType2 = "fvscout"
-attackType3 = "fvsent"
-MaxAttacks = 4
-AttackAnything = true
-buildIfNoIdle = true
-planCondition = "Lua"
-LuaFunction = "SendEarlyScoutHarassment"
-
 [Plan15]
 planType = "BaseBuildMinimums"
 planPriority = 860
@@ -178,20 +150,6 @@ planPriority = 850
 unitType = "fbkiln"
 planCondition = "Lua"
 LuaFunction = "UpgradeKiln"
-
-[Plan17]
-planType = "Attacker"
-planPriority = 840
-targetType1 = "VIRTUAL_CLASS_RECYCLER"
-targetType2 = "VIRTUAL_CLASS_FACTORY"
-targetType3 = "VIRTUAL_CLASS_POWERPLANT"
-attackType1 = "fvsent"
-attackType2 = "fvtank"
-MaxAttacks = 5
-AttackAnything = true
-buildIfNoIdle = true
-planCondition = "Lua"
-LuaFunction = "SendMediumHarassment"
 
 [Plan18]
 planType = "Upgrade"
