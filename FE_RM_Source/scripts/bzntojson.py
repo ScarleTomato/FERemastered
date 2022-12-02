@@ -1,4 +1,4 @@
-import re, json
+import re, json, yaml
 
 def skip(f, n:int):
   for _ in range(n):
@@ -6,15 +6,6 @@ def skip(f, n:int):
 
 def tabs(line):
   return re.search('\S', line).start()
-
-class BZNDecoder(json.JSONEncoder):
-  def default(self, obj):
-    print('def')
-    if isinstance(obj, list) and len(obj) == 1:
-      d = obj[0]
-      if isinstance(d, dict):
-        return d['_']
-    return json.JSONEncoder.default(self, obj)
 
 def flatten(obj):
   if isinstance(obj, list):
@@ -33,14 +24,14 @@ def flatten(obj):
     return ret
   return obj
 
-class BZNObject(list):
+class BZNObject(dict):
 
   def fromLines(self, lines):
-    top = self
+    top = []
     # everything with a [#] is a list of dictionaries
     # if the dictionary has a single unnamed value, name it '_'
     # for ease, [GameObject] is also a list of one dictionary
-    top.append({})
+    top.append(self)
     # the parent is the list that i'm adding into
     parents = [top]
     name = ''
@@ -48,7 +39,7 @@ class BZNObject(list):
       # get the current parent (the last one in the parents list)
       parent:list = parents[-1]
       # if line like 'key = value'
-      if re.match(r'^\w+ = \w+$', line):
+      if re.match(r'^\w+ = .*$', line):
         if not parent is top:
           # these lines always describe a top level element, so move to the top
           parent=top
@@ -67,7 +58,10 @@ class BZNObject(list):
           parents.pop()
           parent = parents[-1]
         # get the name of this key
-        name = re.findall(r'\S+', line)[0]
+        name = '.' * indent + re.findall(r'\S+', line)[0]
+        # if the [#] exists add a dot to the end of the name (for keepsies)
+        if re.search(r'\[\d+\]', line):
+          name += '#'
         # if this key already exists in the last element
         if parent[-1].get(name):
           # make a new element in this parent
@@ -90,28 +84,47 @@ class BZNObject(list):
 
 class BZN:
   header = []
+  header2 = []
   footer = []
   objects = []
   paths = []
 
+  def toJson(self):
+    return json.dumps(flatten({'header':self.header, 'header2':self.header2, 'objects':self.objects, 'paths':self.paths, 'footer':self.footer}), indent=2)
+
+  def toYaml(self):
+    return yaml.dump(flatten({'header':self.header, 'header2':self.header2, 'objects':self.objects, 'paths':self.paths, 'footer':self.footer}), indent=2)
+
   def readHeader(self, f):
+    headerlines = []
     line:str = f.readline()
-    while not line.startswith('size'):
-      self.header.append(line)
+    while not line.startswith('msn_filename'):
+      headerlines.append(line)
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
-    self.header = BZNObject
+    self.header = BZNObject().fromLines(headerlines)
+
+  def readSimpleSection(self, f, end):
+    headerlines = []
+    line:str = f.readline()
+    while not line.startswith(end):
+      headerlines.append(line)
+      line = f.readline()
+    # backup to the beginning of the last line
+    f.seek(f.tell() - len(line) - 1)
+    return BZNObject().fromLines(headerlines)
 
   def readFooter(self, f):
+    lines = []
     line:str = f.readline()
     while line:
-      self.footer.append(line)
+      lines.append(line)
       line = f.readline()
+    self.footer = BZNObject().fromLines(lines)
 
   def readObjects(self, f):
     objectlines = []
-    skip(f, 2)
     line:str = f.readline()
     while not line.startswith('groupTargets'):
       if line.startswith('[GameObject]'):
@@ -143,18 +156,20 @@ class BZN:
 
   def fromFile(self, fn):
     with open(fn, 'r') as f:
-      self.readHeader(f)
+      self.header = self.readSimpleSection(f, 'msn_filename')
+      self.header2 = self.readSimpleSection(f, '[GameObject]')
       self.readObjects(f)
       self.groupTargets = f.readline()
       self.dllName = f.readline()
       self.readPaths(f)
       self.readFooter(f)
-    # self.parsePaths()
 
-fn = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\toparse.bzn'
+fn = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\works20221201.bzn'
 bzn = BZN()
 bzn.fromFile(fn)
-with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.json', 'w') as f:
-  f.write(json.dumps(bzn.paths, indent=2))
+# with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.json', 'w') as f:
+#   f.write(json.dumps(bzn.header, indent=2))
 with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\flat.json', 'w') as f:
-  f.write(json.dumps(flatten(bzn.paths), indent=2))
+  f.write(bzn.toJson())
+with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\flat.yaml', 'w') as f:
+  f.write(bzn.toYaml())
