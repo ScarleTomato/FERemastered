@@ -1,4 +1,4 @@
-import re
+import re, json
 
 def skip(f, n:int):
   for _ in range(n):
@@ -7,25 +7,36 @@ def skip(f, n:int):
 def tabs(line):
   return re.search('\S', line).start()
 
-class BZNObject:
-  fields = {}
+class BZNDecoder(json.JSONEncoder):
+  def default(self, obj):
+    print('def')
+    if isinstance(obj, list) and len(obj) == 1:
+      d = obj[0]
+      if isinstance(d, dict):
+        return d['_']
+    return json.JSONEncoder.default(self, obj)
 
-  def fromStaticLines(lines):
-    top = {}
-    for v in [ 'objClass', 'seqno', 'team', 'isUser', 'objAddr', 'abandoned'
-             , 'curAmmo', 'maxAmmo', 'addAmmo', 'curPilot', 'illumination'
-             , 'name', 'saveFlags', 'isVisible', 'EffectsMask', 'isSeen'
-             , 'groupNumber', 'priority', 'what', 'who', 'where', 'param'
-             , 'aiProcess', 'independence']:
-      findVal(lines, v, top)
-      findTransform(lines, top)
-      findEuler(lines, top)
-    obj = BZNObject()
-    obj.fields = top
-    return obj
+def flatten(obj):
+  if isinstance(obj, list):
+    if len(obj) == 1 and isinstance(obj[0], dict) and len(obj[0]) <= 2:
+      return obj[0].get('_')
+    else:
+      ret = []
+      for sub in obj:
+        ret.append(flatten(sub))
+      return ret
+  if isinstance(obj, dict):
+    ret = {}
+    for k, v in obj.items():
+      if not k == 'indent':
+        ret[k] = flatten(v)
+    return ret
+  return obj
 
-  def fromLines(lines):
-    top = {}
+class BZNObject(dict):
+
+  def fromLines(self, lines):
+    top = self
     parents = [top]
     name = ''
     tab = -1
@@ -41,7 +52,7 @@ class BZNObject:
         spl = line.split(' = ')
         top[spl[0]] = spl[1][:-1]
       # if line 'key =\r\n'
-      if re.match(r'\s*\S+ (\[\d+\] ){0,1}=', line):
+      if re.match(r'^\s*\S+ (\[\d+\] ){0,1}=$', line):
         indent = tabs(line)
         # if i've found a key with no indent, i'm back at the top
         if indent == 0:
@@ -69,17 +80,16 @@ class BZNObject:
 
       # if line is like 'name [#] = ', set this as the new parent, check the tab
       # if line is like 'name [#] = ', set this as the new parent
-    obj = BZNObject()
-    obj.fields = top
-    return obj
+    return self
 
 
 class BZN:
   header = []
   footer = []
   objectlines = []
-  objects= []
+  objects = []
   pathlines = []
+  paths = []
 
   def readHeader(self, f):
     line:str = f.readline()
@@ -88,6 +98,7 @@ class BZN:
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
+    self.header = BZNObject
 
   def readFooter(self, f):
     line:str = f.readline()
@@ -123,10 +134,14 @@ class BZN:
   
   def parseObjects(self):
     for lines in self.objectlines:
-      self.objects.append(BZNObject.fromLines(lines))
+      self.objects.append(BZNObject().fromLines(lines))
+  
+  def parsePaths(self):
+    for lines in self.pathlines:
+      self.paths.append(BZNObject().fromLines(lines))
 
   def fromFile(self, fn):
-    with open(bzn, 'r') as f:
+    with open(fn, 'r') as f:
       self.readHeader(f)
       self.readObjects(f)
       self.groupTargets = f.readline()
@@ -134,7 +149,13 @@ class BZN:
       self.readPaths(f)
       self.readFooter(f)
     self.parseObjects()
+    self.parsePaths()
     # self.parsePaths()
 
-bzn = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.bzn'
-BZN().fromFile(bzn)
+fn = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.bzn'
+bzn = BZN()
+bzn.fromFile(fn)
+with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.json', 'w') as f:
+  f.write(json.dumps(bzn.objects, indent=2))
+with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\flat.json', 'w') as f:
+  f.write(json.dumps(flatten(bzn.objects), indent=2))
