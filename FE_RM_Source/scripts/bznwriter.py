@@ -7,7 +7,7 @@ def writeValue(f:io.TextIOWrapper, key:str, value):
     f.writelines([f'{" " * indent}{key} =\n'])
   elif isinstance(value, list):
       if key.endswith('#'):
-        f.writelines([f'{" " * indent}{key.rstrip("#")} [1] =\n'])
+        f.writelines([f'{" " * indent}{key.rstrip("#")} [{len(value)}] =\n'])
       else:
         f.writelines([f'{" " * indent}{key.rstrip("#")} =\n'])
       for o in value:
@@ -31,6 +31,29 @@ def writeBZN(json, fn):
       f.writelines([f'[GameObject]\n'])
       for k, v in o.items():
         writeValue(f, k, v)
+    for k, v in json['mid'].items():
+      writeValue(f, k, v)
+    f.writelines(['[AiMission]\n'
+    ,'[AOIs]\n'
+    ,'size [1] =\n'
+    ,'0\n'
+    ,'[AiPaths]\n'
+    ,'count [1] =\n'
+    ,f'{len(json["paths"])}\n'
+    ])
+    for o in json['paths']:
+      f.writelines([f'name = AiPath\n'])
+      for k, v in o.items():
+        writeValue(f, k, v)
+    for k, v in json['entered'].items():
+      writeValue(f, k, v)
+    f.writelines(['ownerObj [1] =\n'
+    ,'0\n'
+    ,'ownerObj [1] =\n'
+    ,'0\n'
+    ])
+    for k, v in json['footer'].items():
+      writeValue(f, k, v)
 
 fin = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\flat.json'
 fout = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.bzn'

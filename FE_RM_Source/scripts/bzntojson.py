@@ -82,18 +82,13 @@ class BZNObject(dict):
     return self
 
 
-class BZN:
-  header = []
-  header2 = []
-  footer = []
-  objects = []
-  paths = []
+class BZN(dict):
 
   def toJson(self):
-    return json.dumps(flatten({'header':self.header, 'header2':self.header2, 'objects':self.objects, 'paths':self.paths, 'footer':self.footer}), indent=2)
+    return json.dumps(flatten(self), indent=2)
 
   def toYaml(self):
-    return yaml.dump(flatten({'header':self.header, 'header2':self.header2, 'objects':self.objects, 'paths':self.paths, 'footer':self.footer}), indent=2)
+    return yaml.dump(flatten(self), indent=2)
 
   def readHeader(self, f):
     headerlines = []
@@ -103,25 +98,17 @@ class BZN:
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
-    self.header = BZNObject().fromLines(headerlines)
+    self['header'] = BZNObject().fromLines(headerlines)
 
   def readSimpleSection(self, f, end):
-    headerlines = []
+    lines = []
     line:str = f.readline()
-    while not line.startswith(end):
-      headerlines.append(line)
+    while line and not line.startswith(end):
+      lines.append(line)
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
-    return BZNObject().fromLines(headerlines)
-
-  def readFooter(self, f):
-    lines = []
-    line:str = f.readline()
-    while line:
-      lines.append(line)
-      line = f.readline()
-    self.footer = BZNObject().fromLines(lines)
+    return BZNObject().fromLines(lines)
 
   def readObjects(self, f):
     objectlines = []
@@ -135,12 +122,13 @@ class BZN:
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
+    objects = []
     for lines in objectlines:
-      self.objects.append(BZNObject().fromLines(lines))
+      objects.append(BZNObject().fromLines(lines))
+    return objects
 
   def readPaths(self, f):
     pathlines = []
-    skip(f, 7)
     line:str = f.readline()
     while not line.startswith('hasEntered'):
       if line.startswith('name = AiPath'):
@@ -151,18 +139,21 @@ class BZN:
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
+    paths = []
     for lines in pathlines:
-      self.paths.append(BZNObject().fromLines(lines))
+      paths.append(BZNObject().fromLines(lines))
+    return paths
 
   def fromFile(self, fn):
     with open(fn, 'r') as f:
-      self.header = self.readSimpleSection(f, 'msn_filename')
-      self.header2 = self.readSimpleSection(f, '[GameObject]')
-      self.readObjects(f)
-      self.groupTargets = f.readline()
-      self.dllName = f.readline()
-      self.readPaths(f)
-      self.readFooter(f)
+      self['header'] = self.readSimpleSection(f, 'msn_filename')
+      self['header2'] = self.readSimpleSection(f, '[GameObject]')
+      self['objects'] = self.readObjects(f)
+      self['mid'] = self.readSimpleSection(f, '[AiMission]')
+      self.readSimpleSection(f, 'name = AiPath') # ignore this stuff
+      self['paths'] = self.readPaths(f)
+      self['entered'] = self.readSimpleSection(f, 'PadData')
+      self['footer'] = self.readSimpleSection(f, 'fakeline')
 
 fn = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\works20221201.bzn'
 bzn = BZN()
