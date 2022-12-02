@@ -41,8 +41,6 @@ class BZNObject(list):
     # if the dictionary has a single unnamed value, name it '_'
     # for ease, [GameObject] is also a list of one dictionary
     top.append({})
-    # Keep track of which element we're adding to
-    listndx = 0
     # the parent is the list that i'm adding into
     parents = [top]
     name = ''
@@ -55,7 +53,6 @@ class BZNObject(list):
           # these lines always describe a top level element, so move to the top
           parent=top
           parents = [top]
-          listndx = 0
         spl = line.split(' = ')
         top[0][spl[0]] = spl[1][:-1]
       # if line 'key =\r\n'
@@ -65,12 +62,10 @@ class BZNObject(list):
         if indent == 0:
           parent=top
           parents = [top]
-          listndx = 0
         # if i've found a key with the same indent as the previous parent. i'm done with that parent. move up
         elif indent == parent[0]['indent']:
           parents.pop()
           parent = parents[-1]
-          listndx = 0
         # get the name of this key
         name = re.findall(r'\S+', line)[0]
         # if this key already exists in the last element
