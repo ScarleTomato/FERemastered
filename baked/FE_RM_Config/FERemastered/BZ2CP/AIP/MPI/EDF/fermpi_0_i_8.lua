@@ -161,8 +161,7 @@ end
 -- Allow the CPU to build a Gun Tower on the gtow1 path.
 function BuildGunTower(team, time)
   return validate('BuildGunTower', {
-    scrapOver50 = AIPUtil.GetScrap(team, true) >= 50,
-    powerNotZero = AIPUtil.GetPower(team, true) > 0
+    scrapOver50 = AIPUtil.GetScrap(team, true) >= 50
   })
 end
 

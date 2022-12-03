@@ -1,4 +1,5 @@
-import re, json, yaml
+import re, json, oyaml as yaml
+from collections import OrderedDict
 
 def skip(f, n:int):
   for _ in range(n):
@@ -6,6 +7,12 @@ def skip(f, n:int):
 
 def tabs(line):
   return re.search('\S', line).start()
+
+def int24(s):
+    i = int(s, 16)
+    if i >= 2**23:
+        i -= 2**24
+    return i
 
 def flatten(obj):
   if isinstance(obj, list):
@@ -24,7 +31,7 @@ def flatten(obj):
     return ret
   return obj
 
-class BZNObject(dict):
+class BZNObject(OrderedDict):
 
   def fromLines(self, lines):
     top = []
@@ -65,7 +72,7 @@ class BZNObject(dict):
         # if this key already exists in the last element
         if parent[-1].get(name):
           # make a new element in this parent
-          parent.append({})
+          parent.append(OrderedDict())
         # add this key to the last element in current parent
         parent[-1][name] = [{'indent':indent}]
         # and then set this as the new parent
@@ -129,6 +136,7 @@ class BZN(dict):
 
   def readPaths(self, f):
     pathlines = []
+    skip(f, 3)
     line:str = f.readline()
     while not line.startswith('hasEntered'):
       if line.startswith('name = AiPath'):
@@ -149,18 +157,22 @@ class BZN(dict):
       self['header'] = self.readSimpleSection(f, 'msn_filename')
       self['header2'] = self.readSimpleSection(f, '[GameObject]')
       self['objects'] = self.readObjects(f)
+      # for o in self['objects']:
+      #   out = o['seqno#'][0]['_'] + ':' + o['objClass'] + ':' + str(int24(o['seqno#'][0]['_'])) + ':'
+      #   for key in o.keys():
+      #     out += key[0]
+      #   print(out)
       self['mid'] = self.readSimpleSection(f, '[AiMission]')
-      self.readSimpleSection(f, 'name = AiPath') # ignore this stuff
+      self.readSimpleSection(f, '[AiPaths]') # ignore this stuff
       self['paths'] = self.readPaths(f)
       self['entered'] = self.readSimpleSection(f, 'PadData')
       self['footer'] = self.readSimpleSection(f, 'fakeline')
 
-fn = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\works20221201.bzn'
+dir = r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/'
+fin = 'test.bzn'
 bzn = BZN()
-bzn.fromFile(fn)
-# with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.json', 'w') as f:
-#   f.write(json.dumps(bzn.header, indent=2))
-with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\flat.json', 'w') as f:
+bzn.fromFile(dir + fin)
+with open(dir + fin.replace('.bzn', '.json'), 'w') as f:
   f.write(bzn.toJson())
-with open(r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\flat.yaml', 'w') as f:
+with open(dir + fin.replace('.bzn', '.yaml'), 'w') as f:
   f.write(bzn.toYaml())

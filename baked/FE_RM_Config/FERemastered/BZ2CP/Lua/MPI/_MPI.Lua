@@ -79,6 +79,7 @@ local AIVehicles = {
 ]]
 
 function _MPI.AddObject(h)
+	-- print(tostring(GetCfg(h)) .. "-" .. tostring(GetTeamNum(h)))
 	local ObjBaseClass = GetBase(h);
 	local ODFName = GetCfg(h);
 	local ObjClass = GetClassLabel(h);
@@ -126,7 +127,7 @@ end
 
 function _MPI.SpawnAITeams()
 	-- Start at Team 6, as 1 - 5 are players.
-	for team = 6, 7 do
+	for team = 6, 8 do
 		if (team < 6) then
 			return;
 		end
