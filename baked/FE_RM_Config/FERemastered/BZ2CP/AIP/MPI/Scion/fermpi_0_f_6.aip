@@ -1,0 +1,216 @@
+// File: fercpu_f0.aip
+// Author(s): AI_Unit
+// Summary: Easy AIP plan for the Scion faction for Instant Action or MPI.
+
+[Start]
+idleAllCraft = false
+scavClass = "fvscav_c"
+consClass = "fvcons"
+CheckProvides = true
+DLLCanSwitch = true
+baseDir = 3
+baseLoc = "Recycler_6"
+UnitsService = true
+Difficulty = 1 // 1=Easy, 2=Medium, 3=Hard, 4=Extreme
+
+[Cheat]
+moneyAmount = 3
+moneyDelay = 5
+
+[IdleDispatcher]
+ScavIdleSeconds = 5
+UnitIdleSeconds = 45
+CraftTeamIsPilotTeam = true
+MaxPatrolUnits = 3
+MaxHuntUnits = 2
+MaxEscortUnits = 4
+
+[Plan1] // Maintain keeping units healed where possible.
+planType = "Service"
+planPriority = 1000
+serviceUnit = "fvserv_c"
+unitType1 = "fbrecy_c"
+unitType2 = "fbkiln"
+unitType3 = "fbforg"
+unitType4 = "fbstro"
+unitType5 = "fbover"
+unitType6 = "fbantm"
+unitType7 = "fbjamm"
+unitType8 = "fbspir"
+unitType9 = "fblung"
+
+[Plan2]
+planType = "Recover"
+planPriority = 990
+serviceUnit = "fbdowe"
+unitType1 = "fvcmdr_c"
+unitType2 = "fvscout"
+unitType3 = "fvsent"
+unitType4 = "fvarch"
+unitType5 = "fvtank"
+unitType6 = "fvartl"
+unitType7 = "fvwalk"
+unitType8 = "fvatank"
+unitType9 = "fvrbomb"
+
+[Plan3]
+planType = "BuildMinimums"
+planPriority = 980
+buildType1 = "fvcmdr_c"
+buildCount1 = 1
+
+[Plan4] // Always have 3 active Scavengers for picking up loose scrap.
+planType = "BuildMinimums"
+planPriority = 970
+buildType1 = "fvscav_c"
+buildCount1 = 3
+planCondition = "Lua"
+LuaFunction = "ScavengerBuildLoopCondition"
+
+[Plan5] // Try and collect pools that are free around the map.
+planType = "CollectPool"
+planPriority = 960
+buildIfNoIdle = true
+planCondition = "Lua"
+LuaFunction = "CanCollectScrapPool"
+
+[Plan6] // Try and collect pools that are free around the map.
+planType = "CollectPool"
+planPriority = 950
+buildIfNoIdle = true
+planCondition = "Lua"
+LuaFunction = "CanCollectScrapPool"
+
+[Plan7] // Try and collect any loose scrap that is free around the map.
+planType = "CollectField"
+planPriority = 940
+planCondition = "Lua"
+LuaFunction = "CanCollectLooseScrap"
+
+[Plan8] // Build 4 turrets to be handled by the Dispatcher.
+planType = "BuildMinimums"
+planPriority = 930
+buildType1 = "fvturr"
+buildCount1 = 4
+planCondition = "Lua"
+LuaFunction = "TurretBuildLoopCondition"
+
+[Plan9] // Get our Constructors in the mix.
+planType = "BuildMinimums"
+planPriority = 920
+buildType1 = "fvcons"
+buildCount1 = 1
+planCondition = "Lua"
+LuaFunction = "ConstructorBuildLoopCondition"
+
+[Plan11] // Build a Kiln.
+planType = "BaseBuildMinimums"
+planPriority = 900
+buildType1 = "fbkiln"
+buildCount1 = 1
+buildLoc1 = "kiln_scion_6"
+buildHeading = -2
+planCondition = "Lua"
+LuaFunction = "BuildKiln"
+ContinueEvenIfFail = true
+
+[Plan12] // Build a Gun Spire.
+planType = "BaseBuildMinimums"
+planPriority = 890
+buildType1 = "fbspir"
+buildType2 = "fbspir"
+buildType3 = "fbspir"
+buildType4 = "fbspir"
+buildCount1 = 1
+buildCount2 = 1
+buildCount3 = 1
+buildCount4 = 1
+buildLoc1 = "base_spire1_scion_6"
+buildLoc2 = "base_spire2_scion_6"
+buildLoc3 = "base_spire3_scion_6"
+buildLoc4 = "base_spire4_scion_6"
+planCondition = "Lua"
+LuaFunction = "BuildBaseGunSpire"
+ContinueEvenIfFail = true
+
+[Plan13]
+planType = "BaseBuildMinimums"
+planPriority = 880
+buildType1 = "fbspir"
+buildCount1 = 1
+buildLoc1 = "gtow1_6"
+planCondition = "Lua"
+LuaFunction = "BuildGunSpire1"
+ContinueEvenIfFail = true
+
+[Plan15]
+planType = "BaseBuildMinimums"
+planPriority = 860
+buildType1 = "fbspir"
+buildCount1 = 1
+buildLoc1 = "gtow2_6"
+planCondition = "Lua"
+LuaFunction = "BuildGunSpire2"
+ContinueEvenIfFail = true
+
+[Plan16] // upgrade Kiln
+planType = "Upgrade"
+planPriority = 850
+unitType = "fbkiln"
+planCondition = "Lua"
+LuaFunction = "UpgradeKiln"
+
+[Plan18] // Upgrade Extractor
+planType = "Upgrade"
+planPriority = 830
+unitType = "fbscav_c"
+planCondition = "Lua"
+LuaFunction = "UpgradeFirstExtractor"
+
+[Plan19] // Build a Dower.
+planType = "BaseBuildMinimums"
+planPriority = 820
+buildType1 = "fbdowe"
+buildCount1 = 1
+buildLoc1 = "dowe_scion_6"
+buildHeading = -2
+planCondition = "Lua"
+LuaFunction = "BuildDower"
+ContinueEvenIfFail = true
+
+[Plan20] // Build Antenna
+planType = "BaseBuildMinimums"
+planPriority = 810
+buildType1 = "fbantm"
+buildCount1 = 1
+buildLoc1 = "antm_scion_6"
+planCondition = "Lua"
+LuaFunction = "BuildAntenna"
+ContinueEvenIfFail = true
+
+[Plan21] // Build Stronghold
+planType = "BaseBuildMinimums"
+planPriority = 800
+buildType1 = "fbstro"
+buildCount1 = 1
+buildLoc1 = "stro_scion_6"
+planCondition = "Lua"
+LuaFunction = "BuildStronghold"
+ContinueEvenIfFail = true
+
+[Plan22] // upgrade Antenna
+planType = "Upgrade"
+planPriority = 790
+unitType = "fbantm"
+planCondition = "Lua"
+LuaFunction = "UpgradeAntenna"
+
+[Plan23] // Build Jammer
+planType = "BaseBuildMinimums"
+planPriority = 780
+buildType1 = "fbjamm"
+buildCount1 = 1
+buildLoc1 = "jamm_scion_6"
+planCondition = "Lua"
+LuaFunction = "BuildJammer"
+ContinueEvenIfFail = true

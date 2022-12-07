@@ -116,19 +116,17 @@ LuaFunction = "GunTowerConstructorBuildLoopCondition"
 planType = "BaseBuildMinimums"
 planPriority = 890
 buildType1 = "ibgtow_c"
+buildType2 = "ibgtow_c"
+buildType3 = "ibgtow_c"
+buildType4 = "ibgtow_c"
 buildCount1 = 1
+buildCount2 = 1
+buildCount3 = 1
+buildCount4 = 1
 buildLoc1 = "gtow1_6"
-consClass = "ivcons_g"
-planCondition = "Lua"
-LuaFunction = "BuildGunTower"
-ContinueEvenIfFail = true
-
-[Plan13] // Get Gun Towers going.
-planType = "BaseBuildMinimums"
-planPriority = 880
-buildType1 = "ibgtow_c"
-buildCount1 = 1
-buildLoc1 = "gtow2_6"
+buildLoc2 = "gtow2_6"
+buildLoc3 = "gtow3_6"
+buildLoc4 = "gtow4_6"
 consClass = "ivcons_g"
 planCondition = "Lua"
 LuaFunction = "BuildGunTower"
@@ -182,28 +180,6 @@ planCondition = "Lua"
 LuaFunction = "BuildArmory"
 pathpointsCanBeMissing = true
 
-[Plan22] // Get Gun Towers going.
-planType = "BaseBuildMinimums"
-planPriority = 790
-buildType1 = "ibgtow_c"
-buildCount1 = 1
-buildLoc1 = "gtow3_6"
-consClass = "ivcons_g"
-planCondition = "Lua"
-LuaFunction = "BuildGunTower"
-ContinueEvenIfFail = true
-
-[Plan23] // Get Gun Towers going.
-planType = "BaseBuildMinimums"
-planPriority = 780
-buildType1 = "ibgtow_c"
-buildCount1 = 1
-buildLoc1 = "gtow4_6"
-consClass = "ivcons_g"
-planCondition = "Lua"
-LuaFunction = "BuildGunTower"
-ContinueEvenIfFail = true
-
 [Plan24]
 planType = "Upgrade"
 planPriority = 770
@@ -255,17 +231,13 @@ planType = "BaseBuildMinimums"
 planPriority = 700
 buildType1 = "ibgtow_c"
 buildCount1 = 1
+buildCount2 = 1
+buildCount3 = 1
+buildCount4 = 1
 buildLoc1 = "base_gtow1_edf_6"
-planCondition = "Lua"
-LuaFunction = "BuildBaseGunTower"
-pathpointsCanBeMissing = true
-
-[Plan32]
-planType = "BaseBuildMinimums"
-planPriority = 690
-buildType1 = "ibgtow_c"
-buildCount1 = 1
-buildLoc1 = "base_gtow2_edf_6"
+buildLoc2 = "base_gtow2_edf_6"
+buildLoc3 = "base_gtow3_edf_6"
+buildLoc4 = "base_gtow4_edf_6"
 planCondition = "Lua"
 LuaFunction = "BuildBaseGunTower"
 pathpointsCanBeMissing = true
@@ -277,26 +249,6 @@ unitType = "ibscav_c"
 consClass = "ivcons_g"
 planCondition = "Lua"
 LuaFunction = "UpgradeThirdExtractor"
-
-[Plan35]
-planType = "BaseBuildMinimums"
-planPriority = 660
-buildType1 = "ibgtow_c"
-buildCount1 = 1
-buildLoc1 = "base_gtow3_edf_6"
-planCondition = "Lua"
-LuaFunction = "BuildBaseGunTower"
-pathpointsCanBeMissing = true
-
-[Plan36]
-planType = "BaseBuildMinimums"
-planPriority = 650
-buildType1 = "ibgtow_c"
-buildCount1 = 1
-buildLoc1 = "base_gtow4_edf_6"
-planCondition = "Lua"
-LuaFunction = "BuildBaseGunTower"
-pathpointsCanBeMissing = true
 
 [Plan37]
 planType = "BaseBuildMinimums"
