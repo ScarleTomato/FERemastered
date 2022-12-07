@@ -1,19 +1,27 @@
+import os
+from pathlib import Path
 
+def toFile(o, path):
+  print(f'saved to {os.path.basename(path)}')
+  with open(path, 'w') as fout:
+    fout.write(o)
 
+def fromFile(path):
+  print(f'Reading {os.path.basename(path)}')
+  with open(path, 'r') as fin:
+    return fin.read()
 
-dir = 'C:/Users/Mike/Documents/BZRModManager-v0.5.0.0/git/624970/FERemastered/master/baked/FE_RM_Config/FERemastered/BZ2CP/AIP/MPI/'
-fn = 'EDF/fermpi_0_i_6.aip'
+dir = Path('C:/Users/Mike/Documents/BZRModManager-v0.5.0.0/git/624970/FERemastered/master/baked/FE_RM_Config/FERemastered/BZ2CP/AIP/MPI/')
 
 basedirs = {7:3, 8:1} # 0S 1W 2N 3E
 
-for i in range(7,9):
-  with open(dir + fn, 'r') as fin:
-    aip = fin.read()
-  with open(dir + fn.replace('aip', 'lua'), 'r') as fin:
-    lua = fin.read()
-  aip = aip.replace('_6"', f'_{i}"')
-  aip = aip.replace('baseDir = 2', f'baseDir = {basedirs[i]}')
-  with open(dir + f'EDF/fermpi_0_i_{i}.aip', 'w') as file:
-    file.write(aip)
-  with open(dir + f'EDF/fermpi_0_i_{i}.lua', 'w') as file:
-    file.write(lua)
+for subdir, race in [('EDF', 'i'), ('Scion', 'f')]:
+  for team in range(7,9):
+    aip = fromFile(dir / subdir / f'fermpi_0_{race}_6.aip')
+    lua = fromFile(dir / subdir / f'fermpi_0_{race}_6.lua')
+
+    aip = aip.replace('_6"', f'_{team}"')
+    aip = aip.replace('baseDir = 2', f'baseDir = {basedirs[team]}')
+    
+    toFile(aip, dir / subdir / f'fermpi_0_{race}_{team}.aip')
+    toFile(lua, dir / subdir / f'fermpi_0_{race}_{team}.lua')

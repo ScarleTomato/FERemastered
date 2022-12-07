@@ -1,4 +1,4 @@
-import oyaml as yaml
+import os, oyaml as yaml
 from copy import deepcopy
 
 teams = {'102':'6', '119':'7', '136':'8'}
@@ -13,20 +13,23 @@ labels = {
   , 'ibtrain': 'training_edf_'
   , 'ibpgen': 'pgen#_edf_'
   , 'ibgtow': 'gtow#_'
+  , 'fbantm': 'antm_scion_'
+  , 'fbstro': 'stro_scion_'
+  , 'fbspir': 'base_spire#_scion_'
+  , 'fbdowe': 'dowe_scion_'
+  , 'fbkiln': 'kiln_scion_'
+  , 'fbjamm': 'jamm_scion_'
 }
-vanillapaths = [
-  'stage1', 'stage2', 'stage3'
-  , 'hold1', 'hold2', 'hold3', 'hold4'
-  , 'tank1', 'tank2', 'tank3'
-  , 'tankEnemy1', 'tankEnemy2', 'tankEnemy3'
-  , 'edge_path', 'Recycler'
-]
 
-def toNavObj(path, x, y, z):
+toRemove = ['fblung', 'ipdrop', 'fbrecy']
+
+def toPathMarker(label, x, z, y = 0):
+  # make an object (apserv?) here that we can see in-game
   return {
           "objClass": "apserv",
           "seqno#": "0",
           "team#": "0",
+          "label": "pathMarker",
           "isUser#": "false",
           "objAddr": "0",
           "transform#": [
@@ -40,9 +43,9 @@ def toNavObj(path, x, y, z):
               "..front.x#": "0.00000000e+00",
               "..front.y#": "0.00000000e+00",
               "..front.z#": "1.00000000e+00",
-              "..posit.x#": path['points#'][0]['..x#'], #"-8.09658051e+01",
-              "..posit.y#": y, #"5.00000000e+00",
-              "..posit.z#": path['points#'][0]['..z#'] #"4.27069092e+02"
+              "..posit.x#": '{:.8e}'.format(float(x)),
+              "..posit.y#": '{:.8e}'.format(float(y)),
+              "..posit.z#": '{:.8e}'.format(float(z)),
             }
           ],
           "illumination#": "1.00000000e+00",
@@ -77,7 +80,7 @@ def toNavObj(path, x, y, z):
               ]
             }
           ],
-          "name": path['label'],
+          "name": label,
           "saveFlags#": "108",
           "isVisible#": "65535",
           "EffectsMask#": "65535",
@@ -93,47 +96,75 @@ def toNavObj(path, x, y, z):
           "independence#": "1"
         }
 
-def objtopath(top):
-  newobjects = []
-  newpaths = []
-  for o in top['objects']:
-    if int(o['team#']) > 0 and o['objClass'] in labels.keys():
-      # grab the label with team number
-      label = labels[o['objClass']] + teams[o['team#']]
-      # add the count from the object label if this is an enumerated bldg
-      if '#' in label:
-        label = label.replace('#', o['label'])
-      # create a new path
-      newpath = {
+def newpath(label, x, z):
+  return {
           'sObject': 0
         , 'size#': 0
         , 'label': label
         , 'pointCount#': 0
         , 'points#': [{
-            '..x#': '{:.8e}'.format(float(o['transform#'][0]['..posit.x#']) + 0.000001)
-          , '..z#': '{:.8e}'.format(float(o['transform#'][0]['..posit.z#']) + 0.000001)
+            '..x#': '{:.8e}'.format(float(x))
+          , '..z#': '{:.8e}'.format(float(z))
         }]
         , 'pathType': '00000000'
       }
-      # add nav of path point
-      newobjects.append(toNavObj(newpath, float(o['transform#'][0]['..posit.x#']), float(o['transform#'][0]['..posit.y#']), float(o['transform#'][0]['..posit.z#'])))
-      newpaths.append(newpath)
-    elif o['objClass'] == 'ipdrop':
+
+def objtopath(top):
+  newobjects = []
+  for o in top['objects']:
+    # if this is a path marker, make a path from it
+    if('apserv' == o['objClass'] and 'pathMarker' == o.get('label')):
+      # create a new path
+      path = newpath(o.get('name'), o['transform#'][0]['..posit.x#'], o['transform#'][0]['..posit.z#'])
+      # and add it to the list
+      top['paths'][path['label']] = path
+    # if this is a base building (that we're watching for) make a path from it
+    elif int(o['team#']) > 0 and o['objClass'] in labels.keys():
+      # if o has a label already, just use that
+      label:str = o.get('label')
+      if not label or label.startswith('unnamed_') or label[0].isdigit():
+        # grab the label for this objClass with the team number
+        label = labels[o['objClass']] + teams[o['team#']]
+        # add the count from the object label if this is an enumerated bldg
+        if '#' in label:
+          label = label.replace('#', o['label'])
+      # create a new path
+      path = newpath(label, o['transform#'][0]['..posit.x#'], o['transform#'][0]['..posit.z#'])
+      # and add it to the list
+      top['paths'][path['label']] = path
+    # if this is an ipdrop, leave it out
+    elif o['objClass'] in toRemove:
       continue
+    # and just dump everything else back into the object list
     else:
       newobjects.append(o)
   top['objects'] = newobjects
-  ## Remove any paths that aren't vanilla
-  for p in top['paths']:
-    if p['label'] in vanillapaths:
-      newpaths.append(p)
-  top['paths'] = newpaths
+
+  debugPaths = True
+  if(debugPaths):
+    for p in top['paths'].values():
+      # only do this for single point paths (don't want to fucks w edge_path)
+      if 1 == len(p['points#']):
+        top['objects'].append(toPathMarker(p['label'], p['points#'][0]['..x#'], p['points#'][0]['..z#'], 5))
+
   return top
 
-dir = r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/'
-fn = 'test'
-# with open(fin, 'r') as f:
-#   writeBZN(json.load(f), fout)
-with open(dir + f'{fn}.yaml', 'r') as fin, open(dir + f'{fn}_path.yaml', 'w') as fout:
-  yaml.dump(objtopath(yaml.load(fin, Loader=yaml.Loader)), fout)
-print(f'new paths written to {fn}_path.yaml')
+def toFile(o, path):
+  print(f'saved to {os.path.basename(path)}')
+  with open(path, 'w') as fout:
+    fout.write(o)
+
+def fromYamlFile(path):
+  print(f'Reading {os.path.basename(path)}')
+  with open(path, 'r') as fin:
+    return yaml.load(fin, Loader=yaml.Loader)
+
+def main(dir, inputfn):
+  print(f'objtopath')
+  yml = fromYamlFile(dir + inputfn)
+  ymlstr = yaml.dump(objtopath(yml))
+  outfn = os.path.splitext(inputfn)[0] + '_path.yaml'
+  toFile(ymlstr, dir + outfn)
+
+if '__main__' == __name__:
+  main(r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/', 'test.yaml')

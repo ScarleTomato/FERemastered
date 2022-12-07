@@ -1,47 +1,52 @@
 List of path points that the CPU will use to build, attack, and defend.
 These are not necessary for a map to work with FE IA/MPI, but will greatly improve the CPU experience.
 
+_6 is the team number for team specific paths (6-10 for MPI cpu teams)
+if suffixed by a number, that number is the slot number (for uniqueness, eg gtow4_6 will have 4 gtow position for team 6: gtow1_6 .. gtow4_6)
+
 Defaults: 
-- hold1, hold2, hold3, hold4
-- gtow1, gtow2, gtow3, gtow4
-- RecyclerEnemy
-- TurretEnemy1, TurretEnemy2
+- stage# // team agnostic but needs a number for uniqueness, staging points for units to regroup before attacking
+- hold4_6 // forward defense positions (where turrets will be deployed)
+- gtow4_6 // forward base locations (where guntowers will be built)
+- Recycler_6 // point where the recycler will spawn and the CPU will deploy it
+- TurretEnemy3_6 // point where up to three turrets will spawn
 
-Custom:
-- pgen1_edf, pgen2_edf, pgen3_edf, pgen4_edf
-- factory_edf
-- armory_edf
-- bunker_edf
-- sbay_edf
-- base_gtow1_edf, base_gtow2_edf, base_gtow3_edf, base_gtow4_edf
-- training_edf
-- tech_edf
-- bomber_edf
+EDF:
+- pgen4_edf_6
+- factory_edf_6
+- armory_edf_6
+- bunker_edf_6
+- sbay_edf_6
+- base_gtow4_edf_6
+- training_edf_6
+- tech_edf_6
+- bomber_edf_6
 
-- kiln_scion
-- stro_scion
-- dowe_scion
-- jammer_scion
-- base_spire1_scion, base_spire2_scion, base_spire3_scion, base_spire4_scion,
-- ante_scion
+Scion:
+- kiln_scion_6
+- stro_scion_6
+- dowe_scion_6
+- jammer2_scion_6
+- base_spire4_scion_6
+- ante_scion_6
 
 Hadean:
-- pgen1_had, pgen2_had, pgen3_had, pgen4_had
-- fact_had
-- cbun_had
-- armo_had
-- sbay_had
-- base_gtow1_had, base_gtow2_had, base_gtow3_had, base_gtow4_had
-- tech_had
-- train_had
+- pgen4_had_6
+- fact_had_6
+- cbun_had_6
+- armo_had_6
+- sbay_had_6
+- base_gtow4_had_6
+- tech_had_6
+- train_had_6
 
 Cerberi:
-- pgen1_cer, pgen2_cer, pgen3_cer, pgen4_cer
-- fact_cer
-- cbun_cer
-- armo_cer
-- sbay_cer
-- base_gtow1_cer, base_gtow2_cer, base_gtow3_cer, base_gtow4_cer
-- tcen_cer
-- jamm_cer
-- agen_cer
+- pgen4_cer_6
+- fact_cer_6
+- cbun_cer_6
+- armo_cer_6
+- sbay_cer_6
+- base_gtow4_cer_6
+- tcen_cer_6
+- jamm2_cer_6
+- agen_cer_6

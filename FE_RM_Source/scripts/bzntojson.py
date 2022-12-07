@@ -1,4 +1,5 @@
-import re, json, oyaml as yaml
+import os, re, json, oyaml as yaml, shutil
+from datetime import datetime
 from collections import OrderedDict
 
 def skip(f, n:int):
@@ -147,9 +148,10 @@ class BZN(dict):
       line = f.readline()
     # backup to the beginning of the last line
     f.seek(f.tell() - len(line) - 1)
-    paths = []
+    paths = {}
     for lines in pathlines:
-      paths.append(BZNObject().fromLines(lines))
+      path = BZNObject().fromLines(lines)
+      paths[path['label']] = path
     return paths
 
   def fromFile(self, fn):
@@ -168,11 +170,25 @@ class BZN(dict):
       self['entered'] = self.readSimpleSection(f, 'PadData')
       self['footer'] = self.readSimpleSection(f, 'fakeline')
 
-dir = r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/'
-fin = 'test.bzn'
-bzn = BZN()
-bzn.fromFile(dir + fin)
-with open(dir + fin.replace('.bzn', '.json'), 'w') as f:
-  f.write(bzn.toJson())
-with open(dir + fin.replace('.bzn', '.yaml'), 'w') as f:
-  f.write(bzn.toYaml())
+def toFile(o, path):
+  print(f'saved to {os.path.basename(path)}')
+  with open(path, 'w') as f:
+    f.write(o)
+
+def main(dir, inputfn):
+  print(f'bzntojson reading {inputfn}')
+  os.makedirs(dir + '/bak/', exist_ok=True)
+  bakfn = inputfn + datetime.now().strftime('.%Y%m%d-%H%M')
+  print(f'backed up to {bakfn}')
+  shutil.copyfile(dir + inputfn, dir + '/bak/' + bakfn)
+  bzn = BZN()
+  bzn.fromFile(dir + inputfn)
+  toFile(bzn.toJson(), dir + inputfn.replace('.bzn', '.json'))
+  toFile(bzn.toYaml(), dir + inputfn.replace('.bzn', '.yaml'))
+
+if '__main__' == __name__:
+  dir = r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/'
+  main(dir, 'test.bzn')
+  import objtopath, bznwriter
+  # objtopath.main(dir, 'test.yaml')
+  # bznwriter.main(dir, 'test_path.yaml')

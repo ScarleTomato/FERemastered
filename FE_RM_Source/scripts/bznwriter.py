@@ -1,4 +1,4 @@
-import json, io, oyaml as yaml
+import os, json, io, oyaml as yaml
 
 "{0:#0{1}x}".format(42,10)[2:].upper()
 
@@ -13,7 +13,7 @@ def premat(j):
     o['seqno#'] = hex(5 * address + 2)[2:] if o.get('label') else hex(5 * address + 2 + 0x800000)[2:]
     address += 1
   j['header2']['seq_count#'] = 5 * address + 2
-  for o in j['paths']:
+  for o in j['paths'].values():
     o['sObject'] = "{0:#0{1}x}".format(address, 10)[2:].upper()
     # fix path len indicator, and point count
     o['size#'] = len(o['label'])
@@ -48,9 +48,9 @@ def writeValue(f:io.TextIOWrapper, key:str, value, parent = None):
     else:
       f.writelines([f'{" " * indent}{key} = {value}\n'])
 
-def writeBZN(json, fn):
+def writeBZN(json):
   premat(json)
-  with open(fn, 'w') as f:
+  with io.StringIO("") as f:
     for k, v in json['header'].items():
       writeValue(f, k, v)
     for k, v in json['header2'].items():
@@ -69,7 +69,7 @@ def writeBZN(json, fn):
     ,'count [1] =\n'
     ,f'{len(json["paths"])}\n'
     ])
-    for o in json['paths']:
+    for o in json['paths'].values():
       f.writelines([f'name = AiPath\n'])
       for k, v in o.items():
         writeValue(f, k, v)
@@ -82,6 +82,7 @@ def writeBZN(json, fn):
     ])
     for k, v in json['footer'].items():
       writeValue(f, k, v)
+    return f.getvalue()
 
 # class JDEC(json.JSONDecoder):
 #     def __init__(self, *args, **kwargs):
@@ -91,10 +92,20 @@ def writeBZN(json, fn):
 #         return objectview(dct)
 #       return dct
 
+def toFile(o, path):
+  print(f'saved to {os.path.basename(path)}')
+  with open(path, 'w') as fout:
+    fout.write(o)
 
-fin = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test_path.yaml'
-fout = r'C:\Users\Mike\Documents\My Games\Battlezone Combat Commander\FE\addon\missions\Multiplayer\test\test.bzn'
-# with open(fin, 'r') as f:
-#   writeBZN(json.load(f), fout)
-with open(fin, 'r') as f:
-  writeBZN(yaml.load(f, Loader=yaml.Loader), fout)
+def fromYamlFile(path):
+  print(f'Reading {os.path.basename(path)}')
+  with open(path, 'r') as fin:
+    return yaml.load(fin, Loader=yaml.Loader)
+
+def main(dir, inputfn):
+  print(f'bznwriter')
+  ymlstr = fromYamlFile(dir + inputfn)
+  toFile(writeBZN(ymlstr), dir + 'test.bzn')
+
+if '__main__' == __name__:
+ main(r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/', 'test_path.yaml')
