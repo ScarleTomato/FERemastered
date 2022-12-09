@@ -1,0 +1,156 @@
+global:
+  scavnoidle: true
+  consnoidle: false
+plans:
+- service: fvserv_c
+  units: 
+    - fbrecy_c
+    - fbkiln
+    - fbforg
+    - fbstro
+    - fbover
+    - fbantm
+    - fbjamm
+    - fbspir
+    - fblung
+- service: fbdowe
+  units:
+    - fvcmdr_c
+    - fvscout
+    - fvsent
+    - fvarch
+    - fvtank
+    - fvartl
+    - fvwalk
+    - fvatank
+    - fvrbomb
+- build: fvcmdr_c
+- collect: pool
+- collect: pool
+- collect: field
+- build: fvturr
+  amt: 4
+  when:
+    VIRTUAL_CLASS_RECYCLERBUILDING: 1
+- build: fvserv
+  amt: 3
+  when:
+    VIRTUAL_CLASS_RECYCLERBUILDING: 1
+    VIRTUAL_CLASS_SUPPLYDEPOT: 1
+- build: fvcons
+  amt: 1
+
+## Keep a minimum amount of units on the map before building base stuff
+
+## First extrator
+- build: fbkiln
+  at: kiln_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+- build: fbspir
+  at: base_spire1_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+- upgrade: fbkiln
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+    VIRTUAL_CLASS_GUNTOWER: 1
+    VIRTUAL_CLASS_FACTORY: 1
+## Second extrator
+- build: fvcons
+  amt: 2
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+- build: fbspir
+  at: base_spire2_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+## Third extrator
+- build: fvcons
+  amt: 3
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 3
+- upgrade: fbscav_c
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 3
+    VIRTUAL_CLASS_GUNTOWER: 2
+- build: fbdowe
+  at: dowe_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+    VIRTUAL_CLASS_FACTORY: 1
+- build: fbantm
+  at: antm_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+    VIRTUAL_CLASS_FACTORY: 1
+- build: fbspir
+  at: base_spire3_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+- build: fbstro
+  at: stro_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 3
+    VIRTUAL_CLASS_FACTORY_U: 1
+- upgrade: fbantm
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 3
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_ANTENNA_MOUND: 1
+- build: fbjamm
+  at: jamm_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: 1
+- build: fbspir
+  at: base_spire4_scion
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+- build: fbspir
+  at: gtow1
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+- build: fbspir
+  at: gtow2
+  when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+
+## keep building attack units if all possible base items are built (prioritize by highest tech available)
+- build: fvatank
+  amt: 2
+  when:
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: 1
+    VIRTUAL_CLASS_ARMORY: 1
+- build: fvwalk
+  amt: 2
+  when:
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_SUPPLYDEPOT: 1
+    VIRTUAL_CLASS_ARMORY: 1
+- build: fvartl
+  amt: 3
+  when:
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: 1
+- build: fvtank
+  amt: 3
+  when:
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_ANTENNA_MOUND: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: -1
+- build: fvarch
+  amt: 2
+  when:
+    VIRTUAL_CLASS_FACTORY: 1
+    VIRTUAL_CLASS_ANTENNA_MOUND: 1
+- build: fvsent
+  amt: 2
+  when:
+    VIRTUAL_CLASS_FACTORY: 1
+    VIRTUAL_CLASS_FACTORY_U: -1
+- build: fvscout
+  amt: 2
+  when:
+    VIRTUAL_CLASS_FACTORY_U: -1
