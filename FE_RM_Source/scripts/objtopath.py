@@ -13,6 +13,7 @@ labels = {
   , 'ibtrain': 'training_edf_'
   , 'ibpgen': 'pgen#_edf_'
   , 'ibgtow': 'gtow#_'
+  , 'fbrecy': 'Recycler_'
   , 'fbantm': 'antm_scion_'
   , 'fbstro': 'stro_scion_'
   , 'fbspir': 'base_spire#_scion_'
@@ -109,27 +110,30 @@ def newpath(label, x, z):
         , 'pathType': '00000000'
       }
 
-def objtopath(top):
+def objtopath(top, ignoreMarkers = True):
   newobjects = []
   for o in top['objects']:
     # if this is a path marker, make a path from it
-    if('apserv' == o['objClass'] and 'pathMarker' == o.get('label')):
+    if not ignoreMarkers and 'apserv' == o['objClass'] and 'pathMarker' == o.get('label'):
       # create a new path
       path = newpath(o.get('name'), o['transform#'][0]['..posit.x#'], o['transform#'][0]['..posit.z#'])
       # and add it to the list
       top['paths'][path['label']] = path
     # if this is a base building (that we're watching for) make a path from it
     elif int(o['team#']) > 0 and o['objClass'] in labels.keys():
-      # if o has a label already, just use that
-      label:str = o.get('label')
-      if not label or label.startswith('unnamed_') or label[0].isdigit():
-        # grab the label for this objClass with the team number
-        label = labels[o['objClass']] + teams[o['team#']]
+      objectlabel:str = o.get('label')
+      # if no label or default label, do some hunting
+      if not objectlabel or objectlabel.startswith('unnamed_') or objectlabel[0].isdigit():
+        # grab the new pathname from the labels map for this objClass and the team
+        pathname = labels[o['objClass']] + teams[o['team#']]
         # add the count from the object label if this is an enumerated bldg
-        if '#' in label:
-          label = label.replace('#', o['label'])
+        if '#' in pathname and objectlabel[0].isdigit():
+          pathname = pathname.replace('#', o['label'])
+      # otherwise just use the label given
+      else:
+        pathname = objectlabel
       # create a new path
-      path = newpath(label, o['transform#'][0]['..posit.x#'], o['transform#'][0]['..posit.z#'])
+      path = newpath(pathname, o['transform#'][0]['..posit.x#'], o['transform#'][0]['..posit.z#'])
       # and add it to the list
       top['paths'][path['label']] = path
     # if this is an ipdrop, leave it out

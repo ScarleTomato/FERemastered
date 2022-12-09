@@ -102,10 +102,10 @@ def fromYamlFile(path):
   with open(path, 'r') as fin:
     return yaml.load(fin, Loader=yaml.Loader)
 
-def main(dir, inputfn):
+def main(dir, inputfn, outfn):
   print(f'bznwriter')
   ymlstr = fromYamlFile(dir + inputfn)
-  toFile(writeBZN(ymlstr), dir + 'test.bzn')
+  toFile(writeBZN(ymlstr), dir + outfn)
 
 if '__main__' == __name__:
- main(r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/', 'test_path.yaml')
+ main(r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/', 'test_path.yaml', 'test.bzn')

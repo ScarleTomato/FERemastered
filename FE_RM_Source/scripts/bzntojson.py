@@ -190,5 +190,5 @@ if '__main__' == __name__:
   dir = r'C:/Users/Mike/Documents/My Games/Battlezone Combat Commander/FE/addon/missions/Multiplayer/test/'
   main(dir, 'test.bzn')
   import objtopath, bznwriter
-  # objtopath.main(dir, 'test.yaml')
-  # bznwriter.main(dir, 'test_path.yaml')
+  objtopath.main(dir, 'test.yaml')
+  bznwriter.main(dir, 'test_path.yaml', 'testup.bzn')
