@@ -32,6 +32,7 @@ plans:
   amt: 4
   when:
     VIRTUAL_CLASS_RECYCLERBUILDING: 1
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
 - build: fvserv
   amt: 3
   when:
@@ -41,20 +42,72 @@ plans:
   amt: 1
 
 ## Keep a minimum amount of units on the map before building base stuff
+- build: fvatank
+  amt: 2
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 3
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: 1
+    VIRTUAL_CLASS_ARMORY: 1
+- build: fvwalk
+  amt: 2
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_SUPPLYDEPOT: 1
+    VIRTUAL_CLASS_ARMORY: 1
+- build: fvartl
+  amt: 3
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: 1
+- build: fvtank
+  amt: 3
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+    VIRTUAL_CLASS_FACTORY_U: 1
+    VIRTUAL_CLASS_ANTENNA_MOUND: 1
+    VIRTUAL_CLASS_OVERSEER_ARRAY: -1
+- build: fvarch
+  amt: 2
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+    VIRTUAL_CLASS_FACTORY: 1
+    VIRTUAL_CLASS_ANTENNA_MOUND: 1
+- build: fvsent
+  amt: 2
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+    VIRTUAL_CLASS_FACTORY: 1
+    VIRTUAL_CLASS_FACTORY_U: -1
+- build: fvscout
+  amt: 2
+  when:
+    DefendUnit: -6
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+    VIRTUAL_CLASS_FACTORY_U: -1
 
 ## First extrator
-- build: fbkiln
-  at: kiln_scion
-  when:
-    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
 - build: fbspir
   at: base_spire1_scion
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
+- build: fbkiln
+  at: kiln_scion
+  when:
+    VIRTUAL_CLASS_FACTORY: -1
     VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
 - upgrade: fbkiln
   when:
+    VIRTUAL_CLASS_FACTORY_U: -1
     VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
-    VIRTUAL_CLASS_GUNTOWER: 1
     VIRTUAL_CLASS_FACTORY: 1
 ## Second extrator
 - build: fvcons
@@ -77,6 +130,7 @@ plans:
 - build: fbdowe
   at: dowe_scion
   when:
+    VIRTUAL_CLASS_SUPPLYDEPOT: -1
     VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
     VIRTUAL_CLASS_FACTORY: 1
 - build: fbantm
@@ -120,37 +174,44 @@ plans:
 - build: fvatank
   amt: 2
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 3
     VIRTUAL_CLASS_FACTORY_U: 1
     VIRTUAL_CLASS_OVERSEER_ARRAY: 1
     VIRTUAL_CLASS_ARMORY: 1
 - build: fvwalk
   amt: 2
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
     VIRTUAL_CLASS_FACTORY_U: 1
     VIRTUAL_CLASS_SUPPLYDEPOT: 1
     VIRTUAL_CLASS_ARMORY: 1
 - build: fvartl
   amt: 3
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 2
     VIRTUAL_CLASS_FACTORY_U: 1
     VIRTUAL_CLASS_OVERSEER_ARRAY: 1
 - build: fvtank
   amt: 3
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
     VIRTUAL_CLASS_FACTORY_U: 1
     VIRTUAL_CLASS_ANTENNA_MOUND: 1
     VIRTUAL_CLASS_OVERSEER_ARRAY: -1
 - build: fvarch
   amt: 2
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
     VIRTUAL_CLASS_FACTORY: 1
     VIRTUAL_CLASS_ANTENNA_MOUND: 1
 - build: fvsent
   amt: 2
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
     VIRTUAL_CLASS_FACTORY: 1
     VIRTUAL_CLASS_FACTORY_U: -1
 - build: fvscout
   amt: 2
   when:
+    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
     VIRTUAL_CLASS_FACTORY_U: -1
