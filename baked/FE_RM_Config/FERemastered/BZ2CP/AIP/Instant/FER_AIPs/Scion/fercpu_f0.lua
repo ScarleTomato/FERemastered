@@ -1,5 +1,5 @@
 -- File: fercpu_i0.lua
--- Author(s): AI_Unit
+-- Author(s): ScarleTomato
 -- Summary: Lua conditions for the Scion easy AIP.
 
 -- Initiate AIP Lua Conditions.
