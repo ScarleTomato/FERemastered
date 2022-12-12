@@ -1,0 +1,49 @@
+service
+recover
+1 cmdr
+3 scav
+pool
+pool
+field
+4 turret
+attack pool w light
+1 cons
+2 gtcons
+build gtow1
+build gtow2
+build pgen1
+build pgen2
+attack base w light
+upgrade pool
+build fact
+build armo
+attack base w artillery (mrtr)
+attack base w med (misl)
+build gtow3
+build gtow4
+upgrade pool
+build bunker
+attack base w tank
+build pgen3
+attack base w rckt
+build sbay
+4 serv
+build base_gtow1
+build base_gtow2
+attack base w atank rckt
+upgrade pool
+build base_gtow3
+build base_gtow4
+build pgen4
+build train
+attack base w apc
+build bomber
+1 bomb
+attack base w bomb
+build tcen
+attack base w walk
+attack base w atank
+attack base w tank
+attack base w atank rckt walk
+attack base w rbomb
+attack pool w apc

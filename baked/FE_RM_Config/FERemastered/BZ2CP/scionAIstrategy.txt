@@ -1,0 +1,63 @@
+
+recy
+scav
+scout
+turret
+kiln
+sent: kiln
+antm
+lanc; kiln antm
+forge
+tank; forge
+dowe
+serv
+armo
+walk; forge dowe armo
+over
+atank: forge over armo
+artl: forge over
+rbomb: forge over
+
+service
+recover
+1 cmdr
+3 scav
+pool
+pool
+field
+4 turret
+attack pool w scout
+1 cons
+2 gtcons
+build gtow1
+build gtow2
+build kiln
+attack base w light (scout, sent)
+upgrade pool
+build antm
+attack base w artillery (lanc)
+attack base w med (sent, lanc)
+build gtow3
+build gtow4
+upgrade pool
+build forge
+build armo
+attack base w tank
+build dowe
+attack base w walk
+build 4 serv
+build base_spire1
+build base_spire2
+attack base w heavy (walk, lanc, tank)
+upgrade pool
+build base_spire3
+build base_spire4
+build over
+attack base w archer
+build jamm
+attack base w atank
+attack base w walk
+attack base w tank
+attack base w atank rckt walk
+attack base w rbomb
+attack pool w archer

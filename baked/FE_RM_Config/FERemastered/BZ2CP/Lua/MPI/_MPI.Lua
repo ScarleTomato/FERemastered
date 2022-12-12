@@ -128,7 +128,7 @@ end
 function _MPI.SpawnAITeams()
 	-- Start at Team 6, as 1 - 5 are players.
 	for team = 6, 8 do
-		if (team < 6) then
+		if (team < 6 or 0 == IFace_GetInteger("network.session.ivar8" .. team)) then
 			return;
 		end
 

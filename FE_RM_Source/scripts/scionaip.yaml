@@ -25,14 +25,44 @@ plans:
     - fvatank
     - fvrbomb
 - build: fvcmdr_c
+- build: fvscav_c
+  amt: 3
+  when:
+    scrap: 20
+    VIRTUAL_CLASS_SCAVENGER: -3
+    VIRTUAL_CLASS_RECYCLERBUILDING: 1
+    or:
+      - biometal: 1
+        match: friendly
+      - resource: 1
+        match: friendly
 - collect: pool
+    when:
+      - VIRTUAL_CLASS_RECYCLERBUILDING: 1
+      - biometal: 1
+        match: friendly
 - collect: pool
+    when:
+      - VIRTUAL_CLASS_RECYCLERBUILDING: 1
+      - biometal: 1
+        match: friendly
 - collect: field
+    when:
+      - VIRTUAL_CLASS_RECYCLERBUILDING: 1
+      - resource: 1
+        match: friendly
 - build: fvturr
   amt: 4
   when:
+    scrap: 45
     VIRTUAL_CLASS_RECYCLERBUILDING: 1
-    VIRTUAL_CLASS_EXTRACTOR_GROUP: 1
+- attack:
+    targets:
+      - VIRTUAL_CLASS_SCAVENGER
+      - VIRTUAL_CLASS_EXTRACTOR
+    types:
+      - ivscout
+      - ivscout
 - build: fvserv
   amt: 3
   when:

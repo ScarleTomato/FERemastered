@@ -81,7 +81,7 @@ end
 -- Condition for letting the CPU build Constructors.
 function ConstructorBuildLoopCondition(team, time)
   return validate('ConstructorBuildLoopCondition', {
-    hasAPool = CountCPUExtractors(team, time) > 0,
+    has40Scrap = AIPUtil.GetScrap(team, true) >= 40,
     recyclerExists = DoesRecyclerExist(team, time),
     noConsExist = CountCPUConstructors(team, time) < 1
   })
