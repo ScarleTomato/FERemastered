@@ -406,6 +406,7 @@ attackType2 = "fvartl"
 attackType3 = "fvartl"
 AttackAnything = true
 buildIfNoIdle = true
+MaxAttacks = 2
 planCondition = "Lua"
 LuaFunction = "SendArcherAttacks"
 
