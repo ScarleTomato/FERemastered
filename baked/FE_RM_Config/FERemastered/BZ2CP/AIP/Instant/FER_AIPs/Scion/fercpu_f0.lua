@@ -104,7 +104,7 @@ function BuildStronghold(team, time)
     scrapOver70 = AIPUtil.GetScrap(team, true) >= 70,
     consExist = CountCPUConstructors(team, time) > 0,
     forgeExists = DoesForgeExist(team, time),
-    strongholdExists = DoesStrongholdExist(team, time)
+    lacksStronghold = not DoesStrongholdExist(team, time)
   })
 end
 
@@ -113,7 +113,8 @@ function BuildJammer(team, time)
   return validate('BuildJammer', {
     scrapOver50 = AIPUtil.GetScrap(team, true) >= 50,
     consExist = CountCPUConstructors(team, time) > 0,
-    forgeExists = DoesOverseerExist(team, time)
+    overseerExists = DoesOverseerExist(team, time),
+    lacksJammer = DoesJammerExist(team, time)
   })
 end
 
@@ -122,7 +123,7 @@ function BuildDower(team, time)
   return validate('BuildDower', {
     scrapOver60 = AIPUtil.GetScrap(team, true) >= 60,
     consExist = CountCPUConstructors(team, time) > 0,
-    hasForge = DoesOverseerExist(team, time),
+    hasForge = DoesForgeExist(team, time),
     lacksDower = not DoesDowerExist(team, time)
   })
 end
@@ -216,6 +217,11 @@ end
 -- Checks if the Forge exists.
 function DoesDowerExist(team, time)
     return AIPUtil.CountUnits(team, "VIRTUAL_CLASS_SUPPLYDEPOT", 'sameteam', true) > 0;
+end
+
+-- Checks if the Forge exists.
+function DoesJammerExist(team, time)
+    return AIPUtil.CountUnits(team, "VIRTUAL_CLASS_JAMMER", 'sameteam', true) > 0;
 end
 
 ----------------
